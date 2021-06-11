@@ -1,9 +1,10 @@
-name: pc-kernel
-version: 5.4.0-75.84.1
+name: intel-kernel
+version: 5.11.0-1005.5.1
 summary: generic linux kernel
-description: The generic Ubuntu kernel package as a snap
+description: The Intel Ubuntu kernel package as a snap
 type: kernel
 confinement: strict
+build-base: core20
 
 parts:
   kernel:
@@ -12,9 +13,9 @@ parts:
     source-branch: master
     plugin: make
     make-parameters:
-      - KERNEL_SOURCE=focal:linux-uc20-efi
-      - KERNEL=linux-pc-image
-      - KERNEL_IMAGE_FORMAT=$(if $(filter x86_64,$(shell uname -a)),efi,vmlinuz)
+      - KERNEL_SOURCE=focal:linux-uc20-intel
+      - KERNEL=linux-image-uc20-intel
+      - KERNEL_IMAGE_FORMAT=efi
       - PROPOSED=true
     build-packages:
       - debootstrap
