@@ -1,5 +1,5 @@
 name: intel-kernel
-version: 5.13.0-1007.7.1
+version: 5.13.0-1007.7.2
 summary: generic linux kernel
 description: The Intel Ubuntu kernel package as a snap
 type: kernel
