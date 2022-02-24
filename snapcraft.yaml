@@ -1,7 +1,7 @@
-name: intel-kernel
-version: 5.13.0-1009.9.1
+name: intel-iotg-kernel
+version: 5.15.0-1000.0.0
 summary: generic linux kernel
-description: The Intel Ubuntu kernel package as a snap
+description: The Intel IoTG Ubuntu kernel package as a snap
 type: kernel
 confinement: strict
 build-base: core20
@@ -13,8 +13,8 @@ parts:
     source-branch: master
     plugin: make
     make-parameters:
-      - KERNEL_SOURCE=focal:linux-uc20-intel
-      - KERNEL=linux-image-uc20-intel
+      - KERNEL_SOURCE=focal:linux-uc20-inteli-iotg
+      - KERNEL=linux-image-uc20-intel-iotg
       - KERNEL_IMAGE_FORMAT=efi
       - PROPOSED=true
     build-packages:
