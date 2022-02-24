@@ -1,24 +1,53 @@
 name: intel-iotg-kernel
-version: 5.15.0-1000.0.0
-summary: generic linux kernel
+adopt-info: kernel
+grade: stable
+summary: intel iotg linux kernel
 description: The Intel IoTG Ubuntu kernel package as a snap
 type: kernel
 confinement: strict
 build-base: core20
+# In addition to these repositories, the /+snap/ page on launchpad may
+# also build with ESM repositories enabled, or built in a particular
+# PPA, which will also be used.
+package-repositories:
+  - type: apt
+    ppa: canonical-kernel-team/uc20-release
+  - type: apt
+    ppa: canonical-kernel-team/uc20-staging
+  - type: apt
+    ppa: canonical-kernel-team/proposed
 
 parts:
   kernel:
-    source: git://git.launchpad.net/~canonical-kernel-snaps/+git/kernel-snaps-uc20
-    source-type: git
-    source-branch: master
-    plugin: make
-    make-parameters:
-      - KERNEL_SOURCE=focal:linux-uc20-inteli-iotg
-      - KERNEL=linux-image-uc20-intel-iotg
-      - KERNEL_IMAGE_FORMAT=efi
-      - PROPOSED=true
+    plugin: nil
+    # Set this snap version to the meta version of kernel.efi
+    override-pull: |
+      snapcraftctl pull
+      snapcraftctl set-version "$(apt show linux-image-uc20-intel-iotg 2>/dev/null | sed -n 's/^Version: //p' | head -n1)"
     build-packages:
-      - debootstrap
-      - gnupg
       - kmod
-      - lsb-release
+    stage-packages:
+        - linux-image-uc20-intel-iotg
+    organize:
+      boot: ./
+      lib/firmware: firmware
+      lib/modules: modules
+      usr/share/doc: doc
+    override-build: |
+      rm -f "$SNAPCRAFT_PART_INSTALL"/boot/vmlinuz-*
+      mv "$SNAPCRAFT_PART_INSTALL"/boot/kernel.efi-* "$SNAPCRAFT_PART_INSTALL"/boot/kernel.efi
+      # Update depmod
+      depmod -b "$SNAPCRAFT_PART_INSTALL" $(basename "$SNAPCRAFT_PART_INSTALL"/lib/modules/*)
+      snapcraftctl build
+    # Exclude transitive dependencies of userspace stage-packages that
+    # do not make sense in the kernel snap. E.g. iw tool is shipped in
+    # base snap, but kernel needs to ship regulatory-db datafiles
+    # alone.
+    stage:
+      - -etc
+      - -lib
+      - -usr
+      - -sbin
+      - -doc/crda
+      - -doc/iw
+      - -doc/linux-base

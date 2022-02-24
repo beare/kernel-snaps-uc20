@@ -1,0 +1,6 @@
+#
+# Kernel Source Information
+#
+series: focal
+source: linux-uc20-intel-iotg
+version: 5.15.0-1002.4~20.04.2.1
