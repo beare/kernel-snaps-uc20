@@ -1,4 +1,4 @@
-name: intel-iotg-kernel
+name: znb-iotg-kernel
 adopt-info: kernel
 grade: stable
 summary: intel iotg linux kernel
